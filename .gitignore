@@ -1,0 +1,19 @@
+# FiveM runtime/cache
+cache/
+server-cache/
+server-cache-priv/
+
+# Logs and local artifacts
+*.log
+*.tmp
+*.bak
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Secrets
+.env
+*.secret

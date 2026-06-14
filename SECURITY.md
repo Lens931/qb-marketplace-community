@@ -1,18 +1,32 @@
 # Security Policy
 
-## Supported versions
+## Supported Version
 
-Security fixes target the latest public release of `qb-marketplace-community`.
+Security fixes target the latest public release.
 
-## Reporting a vulnerability
+## Reporting A Vulnerability
 
-Please report vulnerabilities privately to the repository owner before public disclosure. Include reproduction steps, expected impact and any relevant server logs.
+Please do not open a public GitHub issue for exploitable bugs.
 
-## Security design
+Report privately with:
 
-- Client input is never trusted.
-- Prices and totals are recalculated on the server.
-- Inventory and money mutations happen on the server.
-- SQL queries use parameter binding.
-- Sensitive callbacks are rate limited.
-- Offer purchases use guarded quantity updates to reduce race conditions.
+- reproduction steps;
+- affected version or commit;
+- server framework versions;
+- expected and actual behavior;
+- any relevant logs without secrets.
+
+## Security Principles
+
+This resource treats the NUI as untrusted. The server must always validate:
+
+- item name;
+- item ownership;
+- quantity;
+- price;
+- account balances;
+- listing ownership;
+- withdrawal ownership;
+- own-purchase rules.
+
+Pull requests that weaken server-side validation will not be accepted.

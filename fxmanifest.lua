@@ -1,16 +1,16 @@
 fx_version 'cerulean'
 game 'gta5'
-
-name 'qb-marketplace-community'
-author 'Lens931 Community'
-description 'Clean open-source QBCore marketplace system with NUI, SQL persistence, player listings, purchase flow and seller earnings.'
-version '1.0.0'
-license 'MIT'
-
 lua54 'yes'
 
+name 'qb-marketplace-community'
+description 'Premium open-source QBCore marketplace with a transparent glassmorphism NUI.'
+author 'Lens931'
+version '2.0.0'
+
 shared_scripts {
-    'config.lua'
+    'shared/config.lua',
+    'locales/*.lua',
+    'shared/locale.lua'
 }
 
 client_scripts {
@@ -22,12 +22,27 @@ server_scripts {
     'server/main.lua'
 }
 
-ui_page 'html/index.html'
+ui_page 'client/nui/index.html'
 
 files {
-    'html/index.html',
-    'html/style.css',
-    'html/app.js'
+    'client/nui/index.html',
+    'client/nui/style.css',
+    'client/nui/app.js',
+    'client/nui/locales.js'
+}
+
+escrow_ignore {
+    'shared/config.lua',
+    'shared/locale.lua',
+    'locales/*.lua',
+    'client/main.lua',
+    'server/main.lua',
+    'client/nui/index.html',
+    'client/nui/style.css',
+    'client/nui/app.js',
+    'client/nui/locales.js',
+    'sql/install.sql',
+    'README.md'
 }
 
 dependencies {
