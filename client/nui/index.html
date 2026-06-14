@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QB Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="marketplace-shell" aria-hidden="true">
+        <main id="marketplace" class="marketplace" data-theme="purple">
+            <header class="topbar">
+                <div class="brand">
+                    <div class="brand-mark">QB</div>
+                    <div>
+                        <h1 data-i18n="app.title">QB Marketplace</h1>
+                        <p data-i18n="app.subtitle">Community exchange</p>
+                    </div>
+                </div>
+
+                <div class="topbar-actions">
+                    <div class="market-stats">
+                        <span id="stat-offers">0</span>
+                        <small data-i18n="stats.offers">offers</small>
+                    </div>
+                    <div class="market-stats">
+                        <span id="stat-earnings">$0</span>
+                        <small data-i18n="stats.pending">pending</small>
+                    </div>
+                    <button id="refresh-btn" class="icon-button" type="button" title="Refresh" aria-label="Refresh">
+                        <span aria-hidden="true">↻</span>
+                    </button>
+                    <button id="close-btn" class="icon-button danger" type="button" title="Close" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            </header>
+
+            <nav class="tabs" aria-label="Marketplace navigation">
+                <button class="tab active" type="button" data-tab="sell" data-i18n="nav.sell">Sell</button>
+                <button class="tab" type="button" data-tab="offers" data-i18n="nav.offers">Offers</button>
+                <button class="tab" type="button" data-tab="mine" data-i18n="nav.mine">My offers</button>
+                <button class="tab" type="button" data-tab="history" data-i18n="nav.history">History</button>
+                <button class="tab" type="button" data-tab="settings" data-i18n="nav.settings">Settings</button>
+            </nav>
+
+            <section class="workspace">
+                <section id="view-sell" class="view active">
+                    <div class="toolbar">
+                        <label class="search-field">
+                            <span>⌕</span>
+                            <input id="inventory-search" type="search" autocomplete="off" data-i18n-placeholder="search.inventory" placeholder="Search inventory">
+                        </label>
+                        <select id="inventory-category" class="select">
+                            <option value="all" data-i18n="filters.allCategories">All categories</option>
+                        </select>
+                    </div>
+
+                    <div class="sell-layout">
+                        <div>
+                            <div id="inventory-grid" class="item-grid"></div>
+                            <div id="inventory-empty" class="empty-state hidden">
+                                <strong data-i18n="empty.inventoryTitle">No item available</strong>
+                                <span data-i18n="empty.inventoryBody">Your inventory has no sellable item.</span>
+                            </div>
+                        </div>
+
+                        <aside class="sell-panel">
+                            <div class="panel-heading">
+                                <span data-i18n="sell.panelTitle">Create listing</span>
+                                <small id="selected-item-label" data-i18n="sell.noSelection">No item selected</small>
+                            </div>
+
+                            <div id="selected-preview" class="selected-preview muted-preview">
+                                <div class="item-media placeholder">?</div>
+                                <div>
+                                    <strong data-i18n="sell.previewTitle">Select an item</strong>
+                                    <span data-i18n="sell.previewBody">Choose from your inventory.</span>
+                                </div>
+                            </div>
+
+                            <label class="field">
+                                <span data-i18n="sell.quantity">Quantity</span>
+                                <input id="sell-quantity" type="number" min="1" value="1">
+                            </label>
+                            <label class="field">
+                                <span data-i18n="sell.price">Unit price</span>
+                                <input id="sell-price" type="number" min="1" value="1">
+                            </label>
+
+                            <div class="price-summary">
+                                <div>
+                                    <span data-i18n="sell.gross">Gross</span>
+                                    <strong id="summary-gross">$0</strong>
+                                </div>
+                                <div>
+                                    <span data-i18n="sell.tax">Tax</span>
+                                    <strong id="summary-tax">$0</strong>
+                                </div>
+                                <div>
+                                    <span data-i18n="sell.net">Estimated payout</span>
+                                    <strong id="summary-net">$0</strong>
+                                </div>
+                            </div>
+
+                            <button id="create-listing-btn" class="primary-button" type="button" disabled data-i18n="actions.publish">Publish listing</button>
+                        </aside>
+                    </div>
+                </section>
+
+                <section id="view-offers" class="view">
+                    <div class="toolbar">
+                        <label class="search-field">
+                            <span>⌕</span>
+                            <input id="offers-search" type="search" autocomplete="off" data-i18n-placeholder="search.offers" placeholder="Search offers">
+                        </label>
+                        <select id="offers-category" class="select">
+                            <option value="all" data-i18n="filters.allCategories">All categories</option>
+                        </select>
+                        <select id="offers-sort" class="select">
+                            <option value="date-desc" data-i18n="sort.newest">Newest</option>
+                            <option value="date-asc" data-i18n="sort.oldest">Oldest</option>
+                            <option value="price-asc" data-i18n="sort.priceAsc">Price ascending</option>
+                            <option value="price-desc" data-i18n="sort.priceDesc">Price descending</option>
+                        </select>
+                    </div>
+                    <div id="offers-grid" class="offer-grid"></div>
+                    <div id="offers-empty" class="empty-state hidden">
+                        <strong data-i18n="empty.offersTitle">No active offer</strong>
+                        <span data-i18n="empty.offersBody">Try another search or come back later.</span>
+                    </div>
+                </section>
+
+                <section id="view-mine" class="view">
+                    <div class="toolbar split-toolbar">
+                        <div>
+                            <h2 data-i18n="mine.title">My offers</h2>
+                            <p data-i18n="mine.subtitle">Cancel active or expired listings and recover items.</p>
+                        </div>
+                        <select id="mine-filter" class="select">
+                            <option value="all" data-i18n="filters.allStatuses">All statuses</option>
+                            <option value="active" data-i18n="status.active">Active</option>
+                            <option value="expired" data-i18n="status.expired">Expired</option>
+                        </select>
+                    </div>
+                    <div id="mine-grid" class="offer-grid"></div>
+                    <div id="mine-empty" class="empty-state hidden">
+                        <strong data-i18n="empty.mineTitle">No listing yet</strong>
+                        <span data-i18n="empty.mineBody">Publish an item from the Sell tab.</span>
+                    </div>
+                </section>
+
+                <section id="view-history" class="view">
+                    <div class="toolbar split-toolbar">
+                        <div>
+                            <h2 data-i18n="history.title">Sales history</h2>
+                            <p data-i18n="history.subtitle">Withdraw completed sale earnings.</p>
+                        </div>
+                        <button id="withdraw-btn" class="primary-button compact" type="button" data-i18n="actions.withdrawSelected">Withdraw selected</button>
+                    </div>
+                    <div id="history-list" class="history-list"></div>
+                    <div id="history-empty" class="empty-state hidden">
+                        <strong data-i18n="empty.historyTitle">No sale yet</strong>
+                        <span data-i18n="empty.historyBody">Your completed sales will appear here.</span>
+                    </div>
+                </section>
+
+                <section id="view-settings" class="view">
+                    <div class="settings-grid">
+                        <div class="settings-panel">
+                            <h2 data-i18n="settings.theme">Theme</h2>
+                            <div class="theme-options">
+                                <button type="button" class="theme-chip active" data-theme-option="purple" data-i18n="themes.purple">Purple</button>
+                                <button type="button" class="theme-chip" data-theme-option="blue" data-i18n="themes.blue">Blue</button>
+                                <button type="button" class="theme-chip" data-theme-option="dark" data-i18n="themes.dark">Dark</button>
+                            </div>
+                        </div>
+                        <div class="settings-panel">
+                            <h2 data-i18n="settings.config">Configuration</h2>
+                            <dl id="config-list" class="config-list"></dl>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <div id="loader" class="loader hidden" aria-hidden="true">
+        <div class="loader-card">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="toast-stack" class="toast-stack"></div>
+
+    <div id="confirm-modal" class="modal-backdrop hidden" aria-hidden="true">
+        <div class="modal">
+            <h2 id="confirm-title">Confirm</h2>
+            <p id="confirm-body">Confirm action?</p>
+            <div class="modal-actions">
+                <button id="confirm-cancel" class="secondary-button" type="button" data-i18n="actions.cancel">Cancel</button>
+                <button id="confirm-accept" class="primary-button compact" type="button" data-i18n="actions.confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="locales.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
