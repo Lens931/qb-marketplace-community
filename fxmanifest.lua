@@ -31,19 +31,7 @@ files {
     'client/nui/locales.js'
 }
 
-escrow_ignore {
-    'shared/config.lua',
-    'shared/locale.lua',
-    'locales/*.lua',
-    'client/main.lua',
-    'server/main.lua',
-    'client/nui/index.html',
-    'client/nui/style.css',
-    'client/nui/app.js',
-    'client/nui/locales.js',
-    'sql/install.sql',
-    'README.md'
-}
+
 
 dependencies {
     'qb-core',
