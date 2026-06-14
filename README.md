@@ -202,4 +202,4 @@ If this resource saves you time or ships on your server, a GitHub star helps mor
 
 ## License
 
-MIT. Keep the Lens931 credit visible in public forks and releases.
+MIT License. Credit is appreciated. Please keep the original copyright notice when redistributing.
