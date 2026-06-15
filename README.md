@@ -184,6 +184,17 @@ chrome --headless --disable-gpu --window-size=1440,900 --screenshot=docs/screens
 - More marketplace analytics.
 - More locale packs from contributors.
 
+- ## Framework Support Roadmap
+
+Current version targets QBCore/qb-inventory.
+
+Planned adapters:
+- Qbox
+- ox_inventory
+- optional standalone bridge layer
+
+The goal is to keep the marketplace core independent from framework-specific inventory, player and money APIs.
+
 ## Contributing
 
 Good PRs are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
