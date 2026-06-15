@@ -5,75 +5,86 @@
 ![Database](https://img.shields.io/badge/Database-oxmysql-7ef0b2?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-ffd166?style=for-the-badge)
 
-Open-source FiveM/QBCore marketplace by Lens931. Built to feel like a premium paid resource while staying readable, configurable, secure and easy to fork.
+A clean open-source marketplace resource for FiveM servers using QBCore.
+
+`qb-marketplace-community` lets players list items, browse offers, buy from other players, manage their own listings, and withdraw sale earnings through a simple in-game NUI.
+
+The resource is built to stay readable, configurable, and easy to extend.
 
 ![Marketplace preview](docs/screenshots/marketplace-preview.png)
 
-## Why It Stands Out
+## Features
 
-`qb-marketplace-community` is not a quick NUI menu. It is a full marketplace product surface:
+### Player Marketplace
 
-- Transparent glass UI that keeps the game visible. No heavy black rectangle behind the interface.
-- Large responsive marketplace panel for 1080p and 1440p servers.
-- Sell, browse, manage listings, sales history and settings in one clean app.
-- Search, category filters, price/date sorting, item cards, empty states, confirmations, toasts, loaders and skeletons.
-- FR/EN locale system for Lua and NUI through `Config.Locale`.
-- Server-first security: the NUI is never trusted.
-- Clean project structure for contributors and future adapters.
+* List inventory items for sale.
+* Browse active offers.
+* Search and filter listings.
+* Sort offers by price or date.
+* Buy full or partial quantities.
+* Cancel your own listings.
+* Recover remaining items from cancelled listings.
+* View sales history.
+* Withdraw completed sale earnings.
+* Optional seller name display.
 
-## Feature Set
+### Interface
 
-### Player UX
+* Transparent in-game NUI.
+* Responsive layout for 1080p and 1440p.
+* Item cards with category and rarity badges.
+* Confirmations, loading states, empty states and notifications.
+* Built-in themes:
 
-- Publish inventory items as marketplace listings.
-- Browse all active offers with search, filters and sorting.
-- Buy partial quantities from a listing.
-- Cancel your own active or expired listings and recover remaining items.
-- Track seller history and withdraw completed sale earnings.
-- Optional seller display.
-- Item category and rarity badges.
-- Themes: `purple`, `blue`, `dark`.
+  * `purple`
+  * `blue`
+  * `dark`
 
-### Economy Controls
+### Economy Configuration
 
-- Configurable currency.
-- Configurable buyer account: `cash` or `bank`.
-- Configurable seller payout account.
-- Configurable marketplace tax.
-- Configurable price and quantity limits.
-- Configurable listing expiration.
-- Blacklisted item list.
-- Optional own-listing purchase protection.
+* Configurable currency symbol.
+* Buyer account: `cash` or `bank`.
+* Seller payout account.
+* Optional marketplace tax.
+* Price and quantity limits.
+* Listing expiration.
+* Item blacklist.
+* Option to prevent players from buying their own listings.
 
-### Admin & Ops
+### Admin / Server
 
-- Discord logs for listing creation, purchase, cancel and withdrawal.
-- Admin cleanup command.
-- SQL indexes for common listing/history queries.
-- oxmysql transactions for critical updates.
-- Client idle design: no permanent client thread.
+* Discord logs for:
+
+  * listing creation
+  * purchases
+  * cancellations
+  * withdrawals
+* Cleanup command for expired listings.
+* SQL indexes for common marketplace queries.
+* oxmysql transactions for sensitive actions.
+* No permanent client loop.
 
 ## Requirements
 
-- `qb-core`
-- `qb-inventory`
-- `oxmysql`
+* `qb-core`
+* `qb-inventory`
+* `oxmysql`
 
 ## Installation
 
-1. Put the resource in your server, for example:
+1. Place the resource in your server resources folder:
 
 ```text
 resources/[qb]/qb-marketplace-community
 ```
 
-2. Import the database:
+2. Import the SQL file:
 
 ```sql
 source sql/install.sql;
 ```
 
-3. Ensure dependencies before the marketplace:
+3. Add the resource to your server config:
 
 ```cfg
 ensure oxmysql
@@ -82,12 +93,29 @@ ensure qb-inventory
 ensure qb-marketplace-community
 ```
 
-4. Configure [shared/config.lua](shared/config.lua).
-5. Open in game with `/marketplace` or the configured keybind.
+4. Edit the configuration file:
 
-## Configuration Highlights
+```text
+shared/config.lua
+```
 
-All core behavior lives in [shared/config.lua](shared/config.lua).
+5. Open the marketplace in game with:
+
+```text
+/marketplace
+```
+
+Or use the configured keybind if enabled.
+
+## Configuration
+
+Most settings are available in:
+
+```text
+shared/config.lua
+```
+
+Example:
 
 ```lua
 Config.Locale = 'fr'
@@ -109,108 +137,150 @@ Config.Taxes = {
 
 You can configure:
 
-- title, subtitle, theme and currency;
-- cash/bank accounts;
-- taxes and rounding;
-- expiration and cleanup retention;
-- item blacklist;
-- price and quantity limits;
-- keybind and command;
-- Discord logs;
-- item categories and rarity badges.
+* UI title, subtitle, theme and currency;
+* locale;
+* command and keybind;
+* buyer and seller money accounts;
+* tax percentage and rounding;
+* listing expiration;
+* cleanup retention;
+* item blacklist;
+* price and quantity limits;
+* Discord webhook logs;
+* item categories;
+* rarity badges.
 
-## Security Model
+## Security
 
-The browser UI is treated as untrusted. The server always:
+The NUI is only used as an interface. Marketplace actions are validated server-side.
 
-- validates item names, quantities and prices;
-- checks blacklist and item existence;
-- verifies player inventory before listing;
-- verifies buyer funds before purchase;
-- recalculates total price, tax and net payout;
-- protects against double-clicks with rate limits and locks;
-- prevents own-listing purchases when configured;
-- uses oxmysql transactions for listing purchases and withdrawals.
+The server checks:
+
+* item names;
+* item quantities;
+* prices;
+* item blacklist;
+* player inventory before creating a listing;
+* buyer funds before purchase;
+* listing ownership before cancellation;
+* total price, tax and seller payout;
+* duplicate or spammed actions through locks and rate limits.
+
+Purchases and withdrawals use oxmysql transactions to reduce the risk of duplicated items or money.
 
 ## Performance
 
-- No permanent client loop.
-- NUI opens only on command/keybind/event.
-- Server cleanup uses a scheduled timeout, not a tight thread.
-- SQL tables include indexes for active listing and seller-history access.
+The resource is designed to stay light during normal gameplay.
+
+* No permanent client thread.
+* NUI only opens when requested.
+* Scheduled cleanup instead of tight loops.
+* Indexed SQL tables for listings and history.
+* Marketplace data is refreshed only when needed.
 
 ## Locales
 
 Lua locales:
 
-- [locales/fr.lua](locales/fr.lua)
-- [locales/en.lua](locales/en.lua)
+```text
+locales/fr.lua
+locales/en.lua
+```
 
 NUI locales:
 
-- [client/nui/locales.js](client/nui/locales.js)
+```text
+client/nui/locales.js
+```
 
-Set:
+Set the active language in `shared/config.lua`:
 
 ```lua
-Config.Locale = 'fr' -- or 'en'
+Config.Locale = 'fr'
 ```
+
+Available by default:
+
+* French
+* English
 
 ## Database
 
-[sql/install.sql](sql/install.sql) creates:
+The install file is located here:
 
-- `marketplace_listings`
-- `marketplace_sales`
+```text
+sql/install.sql
+```
 
-Sales are kept independent from listing cleanup so seller history remains available.
+It creates:
 
-## Screenshots
+* `marketplace_listings`
+* `marketplace_sales`
 
-The README preview is generated from the built-in NUI demo mode. In game, the demo background is not used; the UI renders over the player camera.
+Sales history is kept separate from listings so old sales can remain available even after expired listings are cleaned up.
 
-To regenerate a local preview:
+## Screenshot Preview
+
+The README preview is generated from the NUI demo mode.
+
+In game, the demo background is not used. The interface renders over the player camera.
+
+To regenerate the preview locally:
 
 ```powershell
 chrome --headless --disable-gpu --window-size=1440,900 --screenshot=docs/screenshots/marketplace-preview.png client/nui/index.html?demo=1
 ```
 
+## Current Framework Support
+
+Current version:
+
+* QBCore
+* qb-inventory
+* oxmysql
+
+Planned support:
+
+* Qbox
+* ox_inventory
+* optional bridge layer for easier framework support
+
+The goal is to keep the marketplace logic separated from framework-specific inventory, player and money functions where possible.
+
 ## Roadmap
 
-- `ox_inventory` adapter.
-- Server-side pagination for very large economies.
-- Optional listing fee.
-- Admin audit dashboard.
-- More marketplace analytics.
-- More locale packs from contributors.
+Planned improvements:
 
-- ## Framework Support Roadmap
-
-Current version targets QBCore/qb-inventory.
-
-Planned adapters:
-- Qbox
-- ox_inventory
-- optional standalone bridge layer
-
-The goal is to keep the marketplace core independent from framework-specific inventory, player and money APIs.
+* ox_inventory adapter.
+* Server-side pagination for very large economies.
+* Optional listing fee.
+* Admin audit dashboard.
+* More marketplace analytics.
+* More locale packs.
 
 ## Contributing
 
-Good PRs are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+Pull requests are welcome.
 
-Useful contributions:
+Useful contributions include:
 
-- translations;
-- inventory adapters;
-- bug fixes with reproduction steps;
-- UI polish that keeps the transparent in-game look;
-- security hardening.
+* translations;
+* inventory adapters;
+* bug fixes with clear reproduction steps;
+* UI improvements;
+* security hardening;
+* framework compatibility work.
 
-## Star The Project
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
 
-If this resource saves you time or ships on your server, a GitHub star helps more people find it. It also helps prioritize future adapters and locale packs.
+## Support
+
+This is a community open-source resource.
+
+Issues and suggestions can be posted on GitHub. Please include clear steps, screenshots, logs or error messages when reporting a bug.
 
 ## License
 
-MIT License. Credit is appreciated. Please keep the original copyright notice when redistributing.
+MIT License.
+
+Credit is appreciated. Please keep the original copyright notice when redistributing or modifying the resource.
